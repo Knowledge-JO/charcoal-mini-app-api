@@ -1,10 +1,15 @@
 import { model, Schema } from "mongoose"
 import { timeInSec } from "../utils/helper"
-import { DayType, rewardsDefault, RewardType } from "./globalSettings"
+import {
+	DayType,
+	defaultDailyRewards,
+	rewardsDefault,
+	RewardType,
+} from "./globalSettings"
 
 type DailyDataType = {
 	currentDay: DayType
-	currentDayReward: number
+	currentDayReward: RewardType
 	totalRewardsEarned: RewardType
 	startTime: number
 	nextStartTime: number
@@ -14,7 +19,10 @@ type DailyDataType = {
 
 const dailyRewardDefaultData: DailyDataType = {
 	currentDay: "day1",
-	currentDayReward: 100,
+	currentDayReward: {
+		...rewardsDefault,
+		coins: defaultDailyRewards.day1.coins,
+	},
 	totalRewardsEarned: rewardsDefault,
 	startTime: timeInSec(),
 	nextStartTime: timeInSec(),
@@ -26,6 +34,22 @@ export type ReferralType = {
 	name: string
 	referralCode: string
 }
+type TapType = {
+	energy: number
+	floatingEnergy: number
+	tapPower: number
+	rechargeFactor: number
+	lastTapTimeInSecs: number
+	lastRefill: number
+}
+const defaultTap: TapType = {
+	energy: 1000,
+	floatingEnergy: 1000,
+	tapPower: 1,
+	rechargeFactor: 1,
+	lastTapTimeInSecs: 0,
+	lastRefill: 0,
+}
 
 interface IUser {
 	telegramId: number
@@ -36,7 +60,8 @@ interface IUser {
 	referredBy: string
 	CPoints: number
 	charcoals: number
-	firePoints: number
+	embers: number
+	tapMining: TapType
 }
 
 const userSchema = new Schema({
@@ -59,17 +84,17 @@ const userSchema = new Schema({
 	CPoints: {
 		type: Number,
 		required: false,
-		default: 1000,
+		default: 50000,
 	},
 	charcoals: {
 		type: Number,
 		required: false,
-		default: 100,
+		default: 10,
 	},
-	firePoints: {
+	embers: {
 		type: Number,
 		required: false,
-		default: 100,
+		default: 50,
 	},
 
 	referralCode: {
@@ -88,6 +113,16 @@ const userSchema = new Schema({
 		required: false,
 		default: "",
 	},
+
+	tapMining: {
+		type: Object,
+		required: false,
+		default: defaultTap,
+	},
+})
+
+userSchema.pre("save", async function () {
+	this.tapMining.lastTapTimeInSecs = timeInSec()
 })
 
 const User = model<IUser>("User", userSchema)

@@ -28,7 +28,7 @@ async function init() {
 	if (!uri) throw new Error("Invalid URI")
 	try {
 		await connect(uri)
-		console.log("Database connection successfull...")
+		console.log("Database connection successful...")
 		const globalSettings = await GlobalSettings.find({})
 		if (globalSettings.length == 0) {
 			await GlobalSettings.create({})
