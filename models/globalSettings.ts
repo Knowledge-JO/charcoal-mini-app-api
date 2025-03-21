@@ -68,13 +68,14 @@ export const defaultDailyRewards: DailyRewardType = {
 	},
 }
 
-type SettingType = {
+export type SettingType = {
 	dailyRewards: DailyRewardType
 	energyLimitsSettings: UpgradeSettingsType
 	multiTapSettings: UpgradeSettingsType
 	emberBurstSettings: UpgradeSettingsType
 	charcoalTurboSettings: UpgradeSettingsType
 	energyRechargeFactorSettings: EnergyRechargeFactorSettingsType
+	charcoalTurboTimeoutSettings: number
 }
 
 const globalSettingsSchema = new Schema({
@@ -107,6 +108,11 @@ const globalSettingsSchema = new Schema({
 		type: Object,
 		required: false,
 		default: defaultEnergyRechargeFactorSettings,
+	},
+	charcoalTurboTimeoutSettings: {
+		type: Number,
+		required: false,
+		default: 0,
 	},
 })
 

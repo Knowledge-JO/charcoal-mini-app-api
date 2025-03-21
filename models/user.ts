@@ -38,6 +38,7 @@ type TapType = {
 	energy: number
 	floatingEnergy: number
 	tapPower: number
+	charcoalTurbo: number
 	rechargeFactor: number
 	lastTapTimeInSecs: number
 	lastRefill: number
@@ -46,12 +47,44 @@ const defaultTap: TapType = {
 	energy: 1000,
 	floatingEnergy: 1000,
 	tapPower: 1,
+	charcoalTurbo: 2,
 	rechargeFactor: 1,
 	lastTapTimeInSecs: 0,
 	lastRefill: 0,
 }
 
-interface IUser {
+export type UpgradeItems =
+	| "multiTap"
+	| "energyLimits"
+	| "charcoalTurbo"
+	| "emberBurst"
+	| "energyRechargeFactor"
+
+type UpgradeType = {
+	[key in UpgradeItems]: {
+		level: number
+	}
+}
+
+const defaultUpgrades: UpgradeType = {
+	multiTap: {
+		level: 1,
+	},
+	energyLimits: {
+		level: 1,
+	},
+	charcoalTurbo: {
+		level: 1,
+	},
+	emberBurst: {
+		level: 1,
+	},
+	energyRechargeFactor: {
+		level: 1,
+	},
+}
+
+export interface IUser {
 	telegramId: number
 	name: string
 	dailyReward: DailyDataType
@@ -61,7 +94,9 @@ interface IUser {
 	CPoints: number
 	charcoals: number
 	embers: number
+	emberBurst: number
 	tapMining: TapType
+	upgrades: UpgradeType
 }
 
 const userSchema = new Schema({
@@ -96,7 +131,11 @@ const userSchema = new Schema({
 		required: false,
 		default: 50,
 	},
-
+	emberBurst: {
+		type: Number,
+		required: false,
+		default: 1000,
+	},
 	referralCode: {
 		type: String,
 		required: [true, "referral code for user is required"],
@@ -118,6 +157,11 @@ const userSchema = new Schema({
 		type: Object,
 		required: false,
 		default: defaultTap,
+	},
+	upgrades: {
+		type: Object,
+		required: false,
+		default: defaultUpgrades,
 	},
 })
 

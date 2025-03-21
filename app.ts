@@ -3,6 +3,8 @@ import express from "express"
 import dotenv from "dotenv"
 import userRoute from "./routes/user"
 import farmRoute from "./routes/farm"
+import upgradeRoute from "./routes/upgrades"
+
 import { connect } from "./db/connectDB"
 import { errorHandlerMiddleware, notFoundMiddleware } from "./middlewares"
 import GlobalSettings from "./models/globalSettings"
@@ -18,6 +20,7 @@ app.use(express.json())
 const baseEndpoint = "/api/v1"
 app.use(baseEndpoint, userRoute)
 app.use(`${baseEndpoint}/farm`, farmRoute)
+app.use(`${baseEndpoint}/purchase`, upgradeRoute)
 
 app.use(notFoundMiddleware)
 

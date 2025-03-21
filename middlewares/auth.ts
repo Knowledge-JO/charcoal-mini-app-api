@@ -21,7 +21,6 @@ export async function authMiddleware(
 	const auth = headers.authorization
 
 	const params = req.params
-	console.log(params)
 
 	if (!auth || !auth.startsWith("Bearer ")) {
 		throw new UnauthenticatedAPIError("Invalid token")
