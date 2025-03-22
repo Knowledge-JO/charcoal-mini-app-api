@@ -4,10 +4,11 @@ import dotenv from "dotenv"
 import userRoute from "./routes/user"
 import farmRoute from "./routes/farm"
 import upgradeRoute from "./routes/upgrades"
-
+import slotMachineRoute from "./routes/slotMachine"
 import { connect } from "./db/connectDB"
 import { errorHandlerMiddleware, notFoundMiddleware } from "./middlewares"
 import GlobalSettings from "./models/globalSettings"
+import SlotMachine from "./models/slotMachine"
 
 dotenv.config()
 
@@ -19,6 +20,7 @@ app.use(express.json())
 
 const baseEndpoint = "/api/v1"
 app.use(baseEndpoint, userRoute)
+app.use(baseEndpoint, slotMachineRoute)
 app.use(`${baseEndpoint}/farm`, farmRoute)
 app.use(`${baseEndpoint}/purchase`, upgradeRoute)
 
@@ -32,9 +34,15 @@ async function init() {
 	try {
 		await connect(uri)
 		console.log("Database connection successful...")
-		const globalSettings = await GlobalSettings.find({})
+		const [globalSettings, slotMachine] = await Promise.all([
+			GlobalSettings.find({}),
+			SlotMachine.find({}),
+		])
 		if (globalSettings.length == 0) {
 			await GlobalSettings.create({})
+		}
+		if (slotMachine.length == 0) {
+			await SlotMachine.create({})
 		}
 		app.listen(port, (err) => {
 			if (err) {

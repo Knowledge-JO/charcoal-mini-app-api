@@ -84,6 +84,19 @@ const defaultUpgrades: UpgradeType = {
 	},
 }
 
+type Potion = "mountain" | "sea" | "forest" | "aerial"
+
+type PotionDataType = {
+	[key in Potion]: number
+}
+
+const defaultPotionData: PotionDataType = {
+	aerial: 0,
+	mountain: 0,
+	sea: 0,
+	forest: 0,
+}
+
 export interface IUser {
 	telegramId: number
 	name: string
@@ -97,6 +110,7 @@ export interface IUser {
 	emberBurst: number
 	tapMining: TapType
 	upgrades: UpgradeType
+	potions: PotionDataType
 }
 
 const userSchema = new Schema({
@@ -162,6 +176,11 @@ const userSchema = new Schema({
 		type: Object,
 		required: false,
 		default: defaultUpgrades,
+	},
+	potions: {
+		type: Object,
+		required: false,
+		default: defaultPotionData,
 	},
 })
 
