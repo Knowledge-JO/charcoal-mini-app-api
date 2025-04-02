@@ -2,9 +2,9 @@ import { Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
 import User, { IUser, UpgradeItems } from "../models/user"
 import { Document, Types } from "mongoose"
-import GlobalSettings, { SettingType } from "../models/globalSettings"
+import GlobalSettings, { SettingType } from "../models/globalSetting"
 import { BadRequestAPIError } from "../errors"
-import { UpgradeSettingsType } from "../models/upgrades"
+import { UpgradeSettingsType } from "../models/upgrade"
 
 async function upgrade(req: Request, res: Response) {
 	const { upgrade, id } = req.params

@@ -5,8 +5,7 @@ function createJWT(id: string, name: string) {
 	const secret = process.env.JWT_SECRET
 	if (!secret) throw new BadRequestAPIError("no secret token")
 
-	// const lifetime = process.env.JWT_LIFETIME || "1d"
-	return jwt.sign({ userId: id, name }, secret)
+	return jwt.sign({ userId: id, name }, secret, { expiresIn: "1d" })
 }
 
 function timeInSec(addHrs = 0) {

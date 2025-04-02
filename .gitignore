@@ -3,3 +3,8 @@
 dist
 
 node_modules
+
+images
+
+uploadPotions.ts
+uploadTasks.ts

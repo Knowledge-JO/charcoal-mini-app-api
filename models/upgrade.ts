@@ -46,7 +46,7 @@ const defaultMultiTapSettings: UpgradeSettingsType = {
 		{ price: 100000000, upgrade: 19 },
 		{ price: 500000000, upgrade: 20 },
 	],
-	NoLevels: 19,
+	NoLevels: 20,
 }
 
 const defaultEmberBurstSettings: UpgradeSettingsType = {

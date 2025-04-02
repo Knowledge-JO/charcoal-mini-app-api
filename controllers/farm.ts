@@ -2,7 +2,7 @@ import { Request, Response } from "express"
 import User from "../models/user"
 import { timeInSec } from "../utils/helper"
 import { StatusCodes } from "http-status-codes"
-import GlobalSettings, { DayType, RewardType } from "../models/globalSettings"
+import GlobalSettings, { DayType, RewardType } from "../models/globalSetting"
 import { BadRequestAPIError } from "../errors"
 
 async function claimDailyReward(req: Request, res: Response) {
@@ -116,13 +116,23 @@ async function multiTap(req: Request, res: Response) {
 	const params = req.params
 	const user = (await User.findOne({ telegramId: params.id }))!
 
-	const tapPower = user.tapMining.tapPower
+	const charcoalTurboEndTime = user.tapMining.charcoalTurboEndTime
+	const charcoalTurbo = user.tapMining.charcoalTurbo
+
+	const turboActive = timeInSec() < charcoalTurboEndTime
+
+	const tapPower = !turboActive
+		? user.tapMining.tapPower
+		: user.tapMining.tapPower * charcoalTurbo
+
 	if (!(user.tapMining.floatingEnergy > tapPower)) {
 		throw new BadRequestAPIError("Energy exhausted")
 	}
 	await user.updateOne({
 		CPoints: user.CPoints + tapPower,
-		"tapMining.floatingEnergy": user.tapMining.floatingEnergy - tapPower,
+		"tapMining.floatingEnergy": turboActive
+			? user.tapMining.floatingEnergy - 0
+			: user.tapMining.floatingEnergy - tapPower,
 		"tapMining.lastTapTimeInSecs": timeInSec(),
 		"tapMining.lastRefill": 0,
 	})
@@ -157,7 +167,7 @@ async function rechargeEnergy(req: Request, res: Response) {
 	const nextRefill = energyRecovered - lastRefill
 
 	if (floatingEnergy < energy) {
-		if (floatingEnergy + energyRecovered > energy) {
+		if (floatingEnergy + nextRefill > energy) {
 			await user.updateOne({
 				"tapMining.floatingEnergy": energy,
 				"tapMining.lastRefill": 0,
@@ -173,4 +183,77 @@ async function rechargeEnergy(req: Request, res: Response) {
 	res.status(StatusCodes.OK).json({ status: "OK" })
 	// .json({ energyRecovered, timeLapsed: timeInSec() - userLastTapTime })
 }
-export { claimDailyReward, getDailyRewardData, multiTap, rechargeEnergy }
+
+async function startCharcoalTurbo(req: Request, res: Response) {
+	const params = req.params
+	const user = (await User.findOne({ telegramId: params.id }))!
+	const globalSettings = (await GlobalSettings.find({}))[0]
+
+	const charcoalTurboFloatingLimit = user.tapMining.charcoalTurboFloatingLimit
+	if (charcoalTurboFloatingLimit < 1) {
+		throw new BadRequestAPIError("Insufficient charcoal turbo")
+	}
+
+	const charcoalTurboLimit = user.tapMining.charcoalTurboLimit
+	const rechargeTimeInSecs = timeInSec(Math.ceil(24 / charcoalTurboLimit))
+
+	await user.updateOne({
+		"tapMining.charcoalTurboEndTime":
+			timeInSec() + globalSettings.charcoalTurboTimeoutSettings,
+		"tapMining.charcoalTurboLastUpdate":
+			charcoalTurboFloatingLimit == 3
+				? timeInSec()
+				: user.tapMining.charcoalTurboLastUpdate + rechargeTimeInSecs,
+		"tapMining.charcoalTurboFloatingLimit": charcoalTurboFloatingLimit - 1,
+	})
+
+	res
+		.status(StatusCodes.OK)
+		.json({ status: "OK", message: "Charcoal Turbo activate" })
+}
+
+async function rechargeCharcoalTurbo(req: Request, res: Response) {
+	const params = req.params
+	const user = (await User.findOne({ telegramId: params.id }))!
+
+	const charcoalTurboLastUpdate = user.tapMining.charcoalTurboLastUpdate
+
+	const charcoalTurboLimit = user.tapMining.charcoalTurboLimit
+	const rechargeHourPerTurbo = 24 / charcoalTurboLimit
+
+	const timeGoneInSecs = timeInSec() - charcoalTurboLastUpdate
+	const timeGoneInHours = timeGoneInSecs / 3600
+
+	const amountRecharged = Math.floor(timeGoneInHours / rechargeHourPerTurbo)
+
+	const lastRefill = user.tapMining.charcoalTurboLastRefill
+	const nextRefill = amountRecharged - lastRefill
+
+	const charcoalTurboFloatingLimit = user.tapMining.charcoalTurboFloatingLimit
+
+	if (nextRefill > 0) {
+		if (nextRefill + charcoalTurboFloatingLimit > charcoalTurboLimit) {
+			await user.updateOne({
+				"tapMining.charcoalTurboFloatingLimit": charcoalTurboLimit,
+				"tapMining.charcoalTurboLastRefill": 0,
+			})
+		} else {
+			await user.updateOne({
+				"tapMining.charcoalTurboFloatingLimit":
+					charcoalTurboFloatingLimit + nextRefill,
+				"tapMining.charcoalTurboLastRefill": amountRecharged,
+			})
+		}
+	}
+
+	res.status(StatusCodes.OK).json({ status: "OK" })
+}
+
+export {
+	claimDailyReward,
+	getDailyRewardData,
+	multiTap,
+	rechargeEnergy,
+	startCharcoalTurbo,
+	rechargeCharcoalTurbo,
+}

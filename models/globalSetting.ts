@@ -7,7 +7,7 @@ import {
 	defaultEmberBurstSettings,
 	defaultMultiTapSettings,
 	defaultEnergyRechargeFactorSettings,
-} from "./upgrades"
+} from "./upgrade"
 
 export type DayType =
 	| "day1"
@@ -68,6 +68,24 @@ export const defaultDailyRewards: DailyRewardType = {
 	},
 }
 
+export type UserLevelSettings = {
+	level: number
+	pointsRq: number
+}
+
+const defaultUserLevelSettings: UserLevelSettings[] = [
+	{ level: 1, pointsRq: 0 },
+	{ level: 2, pointsRq: 100000 },
+	{ level: 3, pointsRq: 200000 },
+	{ level: 4, pointsRq: 400000 },
+	{ level: 5, pointsRq: 800000 },
+	{ level: 6, pointsRq: 1600000 },
+	{ level: 7, pointsRq: 2200000 },
+	{ level: 8, pointsRq: 4400000 },
+	{ level: 9, pointsRq: 8800000 },
+	{ level: 10, pointsRq: 17600000 },
+]
+
 export type SettingType = {
 	dailyRewards: DailyRewardType
 	energyLimitsSettings: UpgradeSettingsType
@@ -76,6 +94,12 @@ export type SettingType = {
 	charcoalTurboSettings: UpgradeSettingsType
 	energyRechargeFactorSettings: EnergyRechargeFactorSettingsType
 	charcoalTurboTimeoutSettings: number
+	userLevelSettings: UserLevelSettings[]
+	referralBonusSettings: number
+	taskValidPeriod: number
+	potionCoolDownSetting: number
+	potionPriceIncreaseRateSetting: number
+	potionCoolDownIncreaseRateSetting: number
 }
 
 const globalSettingsSchema = new Schema({
@@ -112,7 +136,37 @@ const globalSettingsSchema = new Schema({
 	charcoalTurboTimeoutSettings: {
 		type: Number,
 		required: false,
-		default: 0,
+		default: 10,
+	},
+	userLevelSettings: {
+		type: Array,
+		required: false,
+		default: defaultUserLevelSettings,
+	},
+	referralBonusSettings: {
+		type: Number,
+		required: false,
+		default: 50000,
+	},
+	taskValidPeriod: {
+		type: Number,
+		required: false,
+		default: 8,
+	},
+	potionCoolDownSetting: {
+		type: Number,
+		required: false,
+		default: 600,
+	},
+	potionPriceIncreaseRateSetting: {
+		type: Number,
+		required: false,
+		default: 0.65,
+	},
+	potionCoolDownIncreaseRateSetting: {
+		type: Number,
+		required: false,
+		default: 0.65,
 	},
 })
 
