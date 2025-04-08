@@ -9,7 +9,6 @@ export async function errorHandlerMiddleware(
 	next: NextFunction
 ) {
 	const path = req.path
-	console.log(path)
 	if (error instanceof CustomAPIError) {
 		res.status(error.statusCode).json({ message: error.message })
 		return

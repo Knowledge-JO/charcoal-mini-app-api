@@ -28,7 +28,7 @@ const potionSettingsSchema = new Schema(
 			required: [true, "Potion power is required"],
 		},
 		title: { type: String, required: [true, "Potion title is required"] },
-		starts: { type: Number, required: false, default: 0 },
+		stars: { type: Number, required: false, default: 0 },
 		startingPrice: {
 			type: Number,
 			required: [true, "price for potion is required"],

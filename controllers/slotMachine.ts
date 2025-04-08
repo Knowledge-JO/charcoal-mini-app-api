@@ -7,6 +7,13 @@ import SlotMachine, {
 import { StatusCodes } from "http-status-codes"
 import { BadRequestAPIError } from "../errors"
 
+async function slotItems(req: Request, res: Response) {
+	const sm = (await SlotMachine.find({}))[0]
+	const data = sm.slotMachine
+
+	res.status(StatusCodes.OK).json({ data })
+}
+
 async function playSlotMachine(req: Request, res: Response) {
 	const { id } = req.params
 	const body = req.body
@@ -45,7 +52,7 @@ async function playSlotMachine(req: Request, res: Response) {
 				embers: user.embers + reward * bet,
 			})
 			break
-		case "portion-aerial":
+		case "potion-aerial":
 			await user.updateOne({
 				"potions.aerial": user.potions.aerial + reward * bet,
 			})
@@ -108,4 +115,4 @@ async function slotMachine(items: SlotItemDataType[]) {
 	}
 }
 
-export { playSlotMachine }
+export { playSlotMachine, slotItems }

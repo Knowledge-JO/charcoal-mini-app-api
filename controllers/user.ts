@@ -63,7 +63,7 @@ async function loginUser(req: Request, res: Response) {
 }
 
 async function getUsers(req: Request, res: Response) {
-	const users = await User.find({}).select("name CPoints -_id").sort("-CPoints")
+	const users = await User.find({}).select("name CPoints").sort("-CPoints")
 	res.status(StatusCodes.OK).json({ data: users, nbHits: users.length })
 }
 

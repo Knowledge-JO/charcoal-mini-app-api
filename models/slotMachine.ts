@@ -4,7 +4,7 @@ export type SlotMachineItems =
 	| "coins"
 	| "embers"
 	| "charcoal"
-	| "portion-aerial"
+	| "potion-aerial"
 	| "potion-forest"
 	| "potion-mountain"
 	| "potion-sea"
@@ -47,7 +47,7 @@ const defaultData: SlotItemDataType[] = [
 		"reward-3": 3,
 		"probability-2": 3,
 		"probability-3": 1,
-		name: "portion-aerial",
+		name: "potion-aerial",
 	},
 
 	{

@@ -33,6 +33,47 @@ export const rewardsDefault: RewardType = {
 	embers: 0,
 }
 
+export type Item = "coins" | "embers" | "charcoals"
+
+export type PurchaseType = {
+	item: Item
+	itemQuantity: number
+	priceStars: number
+	priceTon: number
+}
+
+const defaultAvailableItemsForPurchase: PurchaseType[] = [
+	{
+		item: "coins",
+		itemQuantity: 50000,
+		priceStars: 10, // 10 stars
+		priceTon: 0.5,
+	},
+	{
+		item: "embers",
+		itemQuantity: 1000,
+		priceStars: 150, // 10 stars
+		priceTon: 0.4,
+	},
+	{
+		item: "embers",
+		itemQuantity: 2000,
+		priceStars: 300, // 10 stars
+		priceTon: 0.8,
+	},
+	{
+		item: "embers",
+		itemQuantity: 3000,
+		priceStars: 450, // 10 stars
+		priceTon: 1.2,
+	},
+	{
+		item: "charcoals",
+		itemQuantity: 2000,
+		priceStars: 15,
+		priceTon: 0.8,
+	},
+]
 export const defaultDailyRewards: DailyRewardType = {
 	day1: {
 		...rewardsDefault,
@@ -84,6 +125,11 @@ const defaultUserLevelSettings: UserLevelSettings[] = [
 	{ level: 8, pointsRq: 4400000 },
 	{ level: 9, pointsRq: 8800000 },
 	{ level: 10, pointsRq: 17600000 },
+	{ level: 11, pointsRq: 35200000 },
+	{ level: 12, pointsRq: 70400000 },
+	{ level: 13, pointsRq: 140800000 },
+	{ level: 14, pointsRq: 281600000 },
+	{ level: 15, pointsRq: 563200000 },
 ]
 
 export type SettingType = {
@@ -100,6 +146,7 @@ export type SettingType = {
 	potionCoolDownSetting: number
 	potionPriceIncreaseRateSetting: number
 	potionCoolDownIncreaseRateSetting: number
+	itemsForPurchase: PurchaseType[]
 }
 
 const globalSettingsSchema = new Schema({
@@ -167,6 +214,11 @@ const globalSettingsSchema = new Schema({
 		type: Number,
 		required: false,
 		default: 0.65,
+	},
+	itemsForPurchase: {
+		type: Array,
+		required: false,
+		default: defaultAvailableItemsForPurchase,
 	},
 })
 

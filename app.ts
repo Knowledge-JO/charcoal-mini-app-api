@@ -10,6 +10,8 @@ import slotMachineRoute from "./routes/slotMachine"
 import globalSettingsRoute from "./routes/globalsettings"
 import potionSettingsRoute from "./routes/potionSettings"
 import taskRoute from "./routes/tasks"
+import paymentRoute from "./routes/payment"
+
 import { connect } from "./db/connectDB"
 import { errorHandlerMiddleware, notFoundMiddleware } from "./middlewares"
 import GlobalSettings from "./models/globalSetting"
@@ -32,6 +34,8 @@ app.use(`${baseEndpoint}/farm`, farmRoute)
 app.use(`${baseEndpoint}/purchase`, upgradeRoute)
 app.use(`${baseEndpoint}/tasks`, taskRoute)
 app.use(`${baseEndpoint}/potionsetting`, potionSettingsRoute)
+app.use(`${baseEndpoint}/pay`, paymentRoute)
+
 app.use(notFoundMiddleware)
 
 app.use(errorHandlerMiddleware)

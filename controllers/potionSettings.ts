@@ -135,7 +135,7 @@ async function _getUserLevel(
 		userLevelIndex = userLevelPoints.length - 1
 	} else {
 		userLevelIndex = userLevelPoints.findIndex((point) => userPoints < point)
-		userLevelIndex = userLevelIndex - 1
+		//userLevelIndex = userLevelIndex - 1
 	}
 
 	const userLevel = userLevelSettings[userLevelIndex < 0 ? 0 : userLevelIndex]
