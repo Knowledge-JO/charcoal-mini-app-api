@@ -19,6 +19,7 @@ const taskSchema = new Schema(
 			enum: ["telegram", "twitter", "web", "youtube", "others"],
 			required: [true, "specify a valid task type"],
 		},
+		url: { type: String, required: [true, "url for task is required"] },
 		reward: { type: Number, required: [true, "Specify the task reward"] },
 		imagePath: { type: String, required: false },
 		taskCategory: { type: String, required: true },
