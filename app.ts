@@ -2,6 +2,7 @@ import "express-async-errors"
 import express from "express"
 import dotenv from "dotenv"
 import cors from "cors"
+import cron from "node-cron"
 
 import userRoute from "./routes/user"
 import farmRoute from "./routes/farm"
@@ -16,6 +17,8 @@ import { connect } from "./db/connectDB"
 import { errorHandlerMiddleware, notFoundMiddleware } from "./middlewares"
 import GlobalSettings from "./models/globalSetting"
 import SlotMachine from "./models/slotMachine"
+import { keepAlive } from "./utils/helper"
+import { StatusCodes } from "http-status-codes"
 
 dotenv.config()
 
@@ -25,6 +28,10 @@ const app = express()
 
 app.use(express.json())
 app.use(cors({ origin: "*" }))
+
+app.get("/", (req, res) => {
+	res.status(StatusCodes.OK).json({ status: "OK", message: "Server online." })
+})
 
 const baseEndpoint = "/api/v1"
 app.use(baseEndpoint, userRoute)
@@ -68,3 +75,7 @@ async function init() {
 }
 
 init()
+cron.schedule("*/5 * * * *", () => {
+	keepAlive("")
+	console.log("Pinging the server every 5 minutes")
+})

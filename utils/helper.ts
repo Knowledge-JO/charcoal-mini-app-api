@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken"
+import https from "https"
 import { BadRequestAPIError } from "../errors"
 
 function createJWT(id: string, name: string) {
@@ -15,4 +16,14 @@ function timeInSec(addHrs = 0) {
 	return secs + inSecs
 }
 
-export { timeInSec, createJWT }
+function keepAlive(url: string) {
+	https
+		.get(url, (res) => {
+			console.log(`Status: ${res.statusCode}`)
+		})
+		.on("error", (error) => {
+			console.error(`Error: ${error.message}`)
+		})
+}
+
+export { timeInSec, createJWT, keepAlive }
