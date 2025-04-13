@@ -103,8 +103,8 @@ async function reset(id: number): Promise<boolean> {
 			{
 				"dailyReward.currentDay": "day1",
 				"dailyReward.startTime": timeInSec(),
-				"dailyReward.nextStartTime": timeInSec(24), // next 24hrs
-				"dailyReward.resetTime": timeInSec(48), // next 48hrs
+				"dailyReward.nextStartTime": timeInSec() - 10, // -10 secs
+				"dailyReward.resetTime": timeInSec(),
 			}
 		)
 		return true
