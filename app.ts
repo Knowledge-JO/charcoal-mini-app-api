@@ -2,7 +2,6 @@ import "express-async-errors"
 import express from "express"
 import dotenv from "dotenv"
 import cors from "cors"
-import cron from "node-cron"
 
 import userRoute from "./routes/user"
 import farmRoute from "./routes/farm"
@@ -75,7 +74,4 @@ async function init() {
 }
 
 init()
-cron.schedule("*/5 * * * *", () => {
-	keepAlive(process.env.BASE_URL || "")
-	console.log("Pinging the server every 5 minutes")
-})
+
