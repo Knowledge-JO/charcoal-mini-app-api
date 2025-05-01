@@ -16,7 +16,6 @@ import { connect } from "./db/connectDB"
 import { errorHandlerMiddleware, notFoundMiddleware } from "./middlewares"
 import GlobalSettings from "./models/globalSetting"
 import SlotMachine from "./models/slotMachine"
-import { keepAlive } from "./utils/helper"
 import { StatusCodes } from "http-status-codes"
 
 dotenv.config()
